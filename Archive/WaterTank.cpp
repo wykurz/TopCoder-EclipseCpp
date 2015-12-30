@@ -12,13 +12,10 @@
 #include <cmath>
 #include <numeric>
 #include <tuple>
-#include <valarray>
-#include <cassert>
-#include <cstring>
-#include <typeinfo>
 
 using namespace std;
-$BEGINCUT$
+
+// BEGIN CUT HERE
 vector<string> split( const string& s, const string& delim =" " ) {
     vector<string> res;
     string t;
@@ -101,35 +98,76 @@ static void eq( int n, string have, string need ) {
         cerr << "." << endl;
     }
 }
-$ENDCUT$
+// END CUT HERE
 
-using uint = unsigned int;
-using ll = long long;
-using ull = unsigned long long;
-using sstrm = stringstream;
-
-#define ZERO(a) std::memset((a), 0, sizeof(a))
-#define FOR(k, a, b) for (decltype(a) k = (a); k <= (b); ++k)
-#define REP(k, a) for (int k = 0; k < (a); ++k)
-#define SQR(x) ((x) * (x))
-#define PW(x) (1ll << (x))
-#define BCNT(x) __builtin_popcountll(x)
-
-template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b; }
-template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
-
-const int dd[] = {1, 0, -1, 0};
-
-class $CLASSNAME$ {
+class WaterTank {
 public:
-    $RC$ $METHODNAME$($METHODPARMS$)
+    double minOutputRate(vector <int> t, vector <int> x, int C)
     {
+    	int n = t.size();
+    	auto f = [t, x, C, n](double r) {
+    		double c = 0;
+    		for (int i = 0; i < n; ++i) {
+    			double er = x[i] - r;
+    			c += t[i] * er;
+    			if (C < c) return false;
+    			c = max(0.0, c);
+    		}
+    		return c <= C;
+    	};
+    	const double D = 1e-9;
+    	double r = 1e7;
+    	double d = 1e7;
+    	while (D < d && !(f(r) && !f(r - D))) {
+    		if (f(r - d)) r -= d;
+    		else d /= 2;
+    	}
+    	return max(0.0, r);
     }
 };
-$BEGINCUT$
+// BEGIN CUT HERE
 int main( int argc, char* argv[] )
 {
-$MAINBODY$
+    {
+        int tARRAY[] = {3,3};
+        vector <int> t( tARRAY, tARRAY+ARRSIZE(tARRAY) );
+        int xARRAY[] = {1,2};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        WaterTank theObject;
+        eq(0, theObject.minOutputRate(t, x, 3),0.9999999999999999);
+    }
+	{
+        int tARRAY[] = {1,2,3,4,5};
+        vector <int> t( tARRAY, tARRAY+ARRSIZE(tARRAY) );
+        int xARRAY[] = {5,4,3,2,1};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        WaterTank theObject;
+        eq(1, theObject.minOutputRate(t, x, 10),1.9999999999999996);
+    }
+    {
+        int tARRAY[] = {5949,3198,376,3592,4019,3481,5609,3840,6092,4059};
+        vector <int> t( tARRAY, tARRAY+ARRSIZE(tARRAY) );
+        int xARRAY[] = {29,38,96,84,10,2,39,27,76,94};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        WaterTank theObject;
+        eq(2, theObject.minOutputRate(t, x, 1000000000),0.0);
+    }
+    {
+        int tARRAY[] = {9,3,4,8,1,2,5,7,6};
+        vector <int> t( tARRAY, tARRAY+ARRSIZE(tARRAY) );
+        int xARRAY[] = {123,456,789,1011,1213,1415,1617,1819,2021};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        WaterTank theObject;
+        eq(3, theObject.minOutputRate(t, x, 11),2019.1666666666665);
+    }
+    {
+        int tARRAY[] = {100};
+        vector <int> t( tARRAY, tARRAY+ARRSIZE(tARRAY) );
+        int xARRAY[] = {1000};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        WaterTank theObject;
+        eq(4, theObject.minOutputRate(t, x, 12345),876.55);
+    }
     return 0;
 }
-$ENDCUT$
+// END CUT HERE
