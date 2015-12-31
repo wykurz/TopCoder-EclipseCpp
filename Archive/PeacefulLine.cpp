@@ -103,86 +103,72 @@ static void eq( int n, string have, string need ) {
 }
 // END CUT HERE
 
-using uint = unsigned int;
-using ll = long long;
-using ull = unsigned long long;
-using sstrm = stringstream;
-
-#define ZERO(a) std::memset((a), 0, sizeof(a))
-#define FOR(k, a, b) for (decltype(a) k = (a); k <= (b); ++k)
-#define REP(k, a) for (int k = 0; k < (a); ++k)
-#define SQR(x) ((x) * (x))
-#define PW(x) (1ll << (x))
-#define BCNT(x) __builtin_popcountll(x)
-
-template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b; }
-template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
-
-const int dd[] = {1, 0, -1, 0};
-
-class BoardEscape {
+class PeacefulLine {
 public:
-    string findWinner(vector <string> s, int k)
+    string makeLine(vector <int> x)
     {
+    	bool ok = true;
+    	int n = x.size();
+    	int h = (n + 1) / 2;
+    	for (int a: x) {
+    		int c = 0;
+    		for (int b: x) {
+    			if (a == b) {
+    				++c;
+    			}
+    		}
+    		if (h < c) {
+    			ok = false;
+    			break;
+    		}
+    	}
+    	return ok ? "possible" : "impossible";
     }
 };
 // BEGIN CUT HERE
 int main( int argc, char* argv[] )
 {
     {
-        string sARRAY[] = {"TE"};
-        vector <string> s( sARRAY, sARRAY+ARRSIZE(sARRAY) );
-        BoardEscape theObject;
-        eq(0, theObject.findWinner(s, 2),"Alice");
+        int xARRAY[] = {25,12,3,25,25,12,12,12,12,3,25};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(5, theObject.makeLine(x),"possible");
     }
     {
-        string sARRAY[] = {"E#E",
-            "#T#",
-            "E#E"};
-        vector <string> s( sARRAY, sARRAY+ARRSIZE(sARRAY) );
-        BoardEscape theObject;
-        eq(1, theObject.findWinner(s, 1000000),"Bob");
+        int xARRAY[] = {1,2,3,4};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(0, theObject.makeLine(x),"possible");
     }
     {
-        string sARRAY[] = {"T.T.T.",
-            ".E.E.E"};
-        vector <string> s( sARRAY, sARRAY+ARRSIZE(sARRAY) );
-        BoardEscape theObject;
-        eq(2, theObject.findWinner(s, 1),"Alice");
+        int xARRAY[] = {1,1,1,2};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(1, theObject.makeLine(x),"impossible");
     }
     {
-        string sARRAY[] = {"TTE"};
-        vector <string> s( sARRAY, sARRAY+ARRSIZE(sARRAY) );
-        BoardEscape theObject;
-        eq(3, theObject.findWinner(s, 6),"Alice");
+        int xARRAY[] = {1,1,2,2,3,3,4,4};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(2, theObject.makeLine(x),"possible");
     }
     {
-        string sARRAY[] = {"..........................",
-            "......TTT..TTT..T...T.....",
-            ".....T.....T..T.TT.TT.....",
-            "......TTT..TTT..T.T.T.....",
-            ".........T.T.T..T...T.....",
-            "......TTT..T..T.T...T.....",
-            "..........................",
-            "...E#E#E#E#E#E#E#E#E#E#...",
-            "..........................",
-            "......TTT..TTT...TTT......",
-            ".....T........T.T.........",
-            "......TTT.....T..TTT......",
-            ".....T...T...T..T...T.....",
-            "......TTT....T...TTT......",
-            "..........................",
-            "...#E#E#E#E#E#E#E#E#E#E...",
-            "..........................",
-            "....TT...T...T..T.TTT.T...",
-            "...T.....T...T..T.T...T...",
-            "...T.TT..T...TTTT.TT..T...",
-            "...T..T..T...T..T.T.......",
-            "....TT...TTT.T..T.T...T...",
-            ".........................."};
-        vector <string> s( sARRAY, sARRAY+ARRSIZE(sARRAY) );
-        BoardEscape theObject;
-        eq(4, theObject.findWinner(s, 987654321),"Bob");
+        int xARRAY[] = {3,3,3,3,13,13,13,13};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(3, theObject.makeLine(x),"possible");
+    }
+    {
+        int xARRAY[] = {3,7,7,7,3,7,7,7,3};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(4, theObject.makeLine(x),"impossible");
+    }
+    {
+        int xARRAY[] = {3,3,3,3,13,13,13,13,3};
+        vector <int> x( xARRAY, xARRAY+ARRSIZE(xARRAY) );
+        PeacefulLine theObject;
+        eq(6, theObject.makeLine(x),"possible");
     }
     return 0;
 }
