@@ -16,6 +16,7 @@
 #include <cassert>
 #include <cstring>
 #include <typeinfo>
+#include <functional>
 
 using namespace std;
 $BEGINCUT$
