@@ -129,7 +129,7 @@ template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b
 template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
 
 double dd[50][101];
-double ee[50];
+double ee[50][101];
 double ff[101];
 
 class DiameterOfRandomTree {
@@ -139,26 +139,34 @@ public:
     	ZERO(ee);
     	ZERO(dd);
     	const int n = a.size();
-    	for (int x = 0; x < n + 1; ++x) dd[x][0] = 1.0;
+    	for (int x = 0; x < n + 1; ++x) {
+    		dd[x][0] = 1.0;
+    		ee[x][0] = 1.0;
+    	}
     	auto printNode = [&](int x) {
-    		for (int l = 0; l < 2 * n; ++l)
+    		for (int l = 0; l <= 2 * n; ++l)
     			cerr << "dd[" << x << "][" << l << "] = " << dd[x][l] << "\n";
     		cerr << "\n";
-    		cerr << "ee[" << x << "] = " << ee[x] << endl;
+    		for (int l = 0; l <= 2 * n; ++l)
+    			cerr << "ee[" << x << "][" << l << "] = " << ee[x][l] << "\n";
     		cerr << "===================================" << endl;
     	};
     	auto printAll = [&]() {
-    		for (int x = 0; x < n + 1; ++x) {
+    		for (int x = 0; x <= n; ++x) {
     			printNode(x);
     		}
     	};
     	auto csum = [&](int x) {
-			for (int l = 1; l <= 2 * n; ++l)
+			for (int l = 1; l <= 2 * n; ++l) {
 				dd[x][l] += dd[x][l - 1];
+				ee[x][l] += ee[x][l - 1];
+			}
     	};
     	auto diff = [&](int x) {
-			for (int l = 2 * n; 1 <= l; --l)
+			for (int l = 2 * n; 1 <= l; --l) {
 				dd[x][l] -= dd[x][l - 1];
+				ee[x][l] -= ee[x][l - 1];
+			}
     	};
     	auto pmax = [&](int x, int y) {
     		csum(x); csum(y);
@@ -167,14 +175,19 @@ public:
 			diff(x); diff(y);
     	};
     	auto psum = [&](int x, int y) {
-    		double ret = 0;
+    		ZERO(ff);
     		for (int l = 0; l <= 2 * n; ++l) {
     			for (int l1 = 0; l1 <= l; ++l1) {
     				int l2 = l - l1;
-    				ret += l * dd[x][l1] * dd[y][l2];
+    				ff[l] += dd[x][l1] * dd[y][l2];
     			}
     		}
-    		return ret;
+    		for (int l = 1; l <= 2 * n; ++l)
+    			ff[l] += ff[l - 1];
+    		csum(x);
+			for (int l = 0; l <= 2 * n; ++l)
+				ee[x][l] *= ff[l];
+			diff(x);
     	};
     	auto pext = [&](int y) {
     		ff[0] = 0;
@@ -200,20 +213,25 @@ public:
     				dfs(y);
     			}
     		}
+    		printNode(x);
     		for (int y : t)	{
     			pext(y);
-    			printNode(y);
+    			// printNode(y);
     		}
         	for (int i = 0; i < t.size(); ++i) {
-        		chmax(ee[x], psum(x, t[i]));
+        		psum(x, t[i]);
         		pmax(x, t[i]);
+        		printNode(x);
     		}
-    		printNode(x);
+        	printNode(x);
     	};
     	dfs(0);
     	double ret = 0;
     	for (int x = 0; x <= n; ++x) {
-    		chmax(ret, ee[x]);
+    		double rx = 0;
+    		for (int l = 0; l <= 2 * n; ++l)
+    			rx += l * ee[x][l];
+    		chmax(ret, rx);
     	}
     	return ret;
     }
@@ -222,6 +240,14 @@ public:
 int main( int argc, char* argv[] )
 {
 //    {
+//        int aARRAY[] = {0,1,2};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1,2,3};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        DiameterOfRandomTree theObject;
+//        eq(5, theObject.getExpectation(a, b),4.5);
+//    }
+//    {
 //        int aARRAY[] = {0,1,2,3};
 //        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
 //        int bARRAY[] = {1,2,3,4};
@@ -229,6 +255,14 @@ int main( int argc, char* argv[] )
 //        DiameterOfRandomTree theObject;
 //        eq(0, theObject.getExpectation(a, b),6.0);
 //    }
+    {
+        int aARRAY[] = {0,0};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1,2};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        DiameterOfRandomTree theObject;
+        eq(6, theObject.getExpectation(a, b),3.0);
+    }
 //    {
 //        int aARRAY[] = {0,0,0};
 //        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
@@ -237,14 +271,14 @@ int main( int argc, char* argv[] )
 //        DiameterOfRandomTree theObject;
 //        eq(1, theObject.getExpectation(a, b),3.375);
 //    }
-    {
-        int aARRAY[] = {0,0,0,1,4};
-        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1,2,3,4,5};
-        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-        DiameterOfRandomTree theObject;
-        eq(2, theObject.getExpectation(a, b),6.25);
-    }
+//    {
+//        int aARRAY[] = {0,0,0,1,4};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1,2,3,4,5};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        DiameterOfRandomTree theObject;
+//        eq(2, theObject.getExpectation(a, b),6.25);
+//    }
 //    {
 //        int aARRAY[] = {0,0,0,0,0,0,0,0};
 //        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
