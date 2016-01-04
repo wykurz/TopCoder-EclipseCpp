@@ -110,6 +110,14 @@ using ull = unsigned long long;
 using sstrm = stringstream;
 
 #define ZERO(a) std::memset((a), 0, sizeof(a))
+#define FILL1D(a, v) std::fill_n(a, sizeof(a) / sizeof(a[0]), v)
+#define FILL2D(a, v) std::fill_n(&a[0][0], sizeof(a) / sizeof(a[0][0]), v)
+#define FILL3D(a, v) std::fill_n(&a[0][0][0], sizeof(a) / sizeof(a[0][0][0]), v)
+#define FILL4D(a, v) std::fill_n(&a[0][0][0][0], sizeof(a) / sizeof(a[0][0][0][0]), v)
+#define COPY1D(a, b) std::copy_n(a, sizeof(a) / sizeof(a[0]), b)
+#define COPY2D(a, b) std::copy_n(&a[0][0], sizeof(a) / sizeof(a[0][0]), &b[0][0])
+#define COPY3D(a, b) std::copy_n(&a[0][0][0], sizeof(a) / sizeof(a[0][0][0]), &b[0][0][0])
+#define COPY4D(a, b) std::copy_n(&a[0][0][0][0], sizeof(a) / sizeof(a[0][0][0][0]), &b[0][0][0][0])
 #define FOR(k, a, b) for (decltype(a) k = (a); k <= (b); ++k)
 #define REP(k, a) for (int k = 0; k < (a); ++k)
 #define SQR(x) ((x) * (x))
