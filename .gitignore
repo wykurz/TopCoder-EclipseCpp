@@ -1,2 +1,5 @@
 Debug/
 *.stackdump
+.cproject
+.project
+.settings/language.settings.xml
