@@ -154,15 +154,15 @@ public:
 //                cerr << "dp[" << n << "][" << n - 1 << "][" << s << "] += dp[" << n - 1 << "][" << i << "][" << s << "];" << "\n";
 //                cerr << "dp[" << n << "][" << n - 1 << "][" << s << "] += " << dp[n - 1][i][s] << "\n";
             }
-            REP(l, n - 2) REP(ml, l) REP(sl, S + 1) {
+            REP(l, n - 1) REP(ml, l) REP(sl, S + 1) {
                 if (0 == dp[l][ml][sl]) continue;
                 int r = n - l - 1;
-                REP(mr, r) REP(sr, max(0, S - sl - (l + 1 + mr - ml)) + 1) {
+                REP(mr, r) REP(sr, max(0, S - sl - (l + mr - ml)) + 1) {
                     if (0 == dp[r][mr][sr]) continue;
-                    int s = sl + sr + (l + 1 + mr - ml);
+                    int s = sl + sr + (l + mr - ml);
 //                    cerr << "dp[" << n << "][" << l << "][" << s << "] += dp[" << l << "][" << ml << "][" << sl << "] * dp[" << r << "][" << mr << "][" << sr << "];" << "\n";
 //                    cerr << "dp[" << n << "][" << l << "][" << s << "] += " << dp[l][ml][sl] << " * " << dp[r][mr][sr] << "\n";
-                    add(dp[n][l][s], dp[l][ml][sl] * dp[r][mr][sr], mod);
+                    add(dp[n][l][s], 2 * dp[l][ml][sl] * dp[r][mr][sr], mod);
 //                    cerr << endl;
                 }
             }
@@ -170,12 +170,25 @@ public:
 //        cerr << "done" << endl;
         ll ret = 0;
         REP(m, N) REP(s, S + 1) add(ret, dp[N][m][s], mod);
+        // TODO: print out non-zero ones...
         return (int) ret;
     }
 };
 // BEGIN CUT HERE
 int main( int argc, char* argv[] )
 {
+    {
+        BearPermutations theObject;
+        eq(8, theObject.countPermutations(2, 50, 71876209),2);
+    }
+    {
+        BearPermutations theObject;
+        eq(7, theObject.countPermutations(3, 50, 71876209),2 * 3);
+    }
+    {
+        BearPermutations theObject;
+        eq(6, theObject.countPermutations(4, 50, 71876209),2 * 3 * 4);
+    }
     {
         BearPermutations theObject;
         eq(0, theObject.countPermutations(3, 1, 71876209),4);
