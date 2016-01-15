@@ -131,10 +131,10 @@ using sstrm = stringstream;
 
 template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b; }
 template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
-template<typename S, typename T, typename U> inline void add(S& a, T b, U m) { a = (a + b) % m; }
 
 constexpr int L = 100 + 1;
 
+ll bn[L][L];
 // count * min idx * value
 ll dp[L][L][L];
 
@@ -143,34 +143,55 @@ public:
     int countPermutations(int N, int S, int mod)
     {
         if (N < 2) return 0;
+        auto add = [&](ll& a, ll b) { a = (a + b) % mod; };
+        auto mul = [&](ll a, ll b) { return (a * b) % mod; };
+        ZERO(bn);
+        REP(n, N + 1) bn[n][0] = 1;
+        FOR(n, 1, N) FOR(m, 1, n) add(bn[n][m], bn[n - 1][m] + bn[n - 1][m - 1]);
         ZERO(dp);
-        dp[1][0][0] = 1;
-        FOR(n, 2, N) {
-            REP(i, n) FOR(s, 0, S) {
-                add(dp[n][0    ][s], dp[n - 1][i][s], mod);
-//                cerr << "dp[" << n << "][0][" << s << "] += dp[" << n - 1 << "][" << i << "][" << s << "];" << "\n";
-//                cerr << "dp[" << n << "][0][" << s << "] += " << dp[n - 1][i][s] << "\n";
-                add(dp[n][n - 1][s], dp[n - 1][i][s], mod);
-//                cerr << "dp[" << n << "][" << n - 1 << "][" << s << "] += dp[" << n - 1 << "][" << i << "][" << s << "];" << "\n";
-//                cerr << "dp[" << n << "][" << n - 1 << "][" << s << "] += " << dp[n - 1][i][s] << "\n";
-            }
-            REP(l, n - 1) REP(ml, l) REP(sl, S + 1) {
-                if (0 == dp[l][ml][sl]) continue;
-                int r = n - l - 1;
-                REP(mr, r) REP(sr, max(0, S - sl - (l + mr - ml)) + 1) {
-                    if (0 == dp[r][mr][sr]) continue;
-                    int s = sl + sr + (l + mr - ml);
-//                    cerr << "dp[" << n << "][" << l << "][" << s << "] += dp[" << l << "][" << ml << "][" << sl << "] * dp[" << r << "][" << mr << "][" << sr << "];" << "\n";
-//                    cerr << "dp[" << n << "][" << l << "][" << s << "] += " << dp[l][ml][sl] << " * " << dp[r][mr][sr] << "\n";
-                    add(dp[n][l][s], 2 * dp[l][ml][sl] * dp[r][mr][sr], mod);
-//                    cerr << endl;
+        dp[0][0][0] = 1;
+        FOR(n, 1, N) FOR(n1, 0, n) {
+            int n2 = n - n1 - 1;
+            if (n2 < 0) continue;
+//            cerr << "n1: " << n1 << endl;
+//            cerr << "n2: " << n2 << endl;
+            REP(w1, N) REP(w2, N) {
+                int w = n1;
+//                cerr << "w1: " << w1 << endl;
+//                cerr << "w2: " << w2 << endl;
+
+                REP(s1, S + 1) REP(s2, S + 1) {
+//                    cerr << "s1: " << w1 << endl;
+//                    cerr << "s2: " << w2 << endl;
+
+                    int s = s1 + s2 + ((0 < n1 && 0 < n2) ? n1 + 1 + w2 - w1 : 0);
+
+//                    cerr << "n: " << n << endl;
+//                    cerr << "w: " << w << endl;
+//                    cerr << "s: " << s << endl;
+
+                    if (S < s) {
+//                        cerr << "break!" << endl;
+                        break;
+                    }
+
+//                    if (n == 3 && w == 1 && s == 0) {
+//                        cerr << "dp[" << n << "][" << w << "][" << s << "] += bn[" << n1 + n2 << "][" << n1 << "] * dp[" << n1 << "][" << w1 << "][" << s1 << "] * dp[" << n2 << "][" << w2 << "][" << s2 << "]" << endl;
+//                        cerr << dp[n][w][s] << " += " << bn[n1 + n2][n1] << " * " << dp[n1][w1][s1] << " * " << dp[n2][w2][s2] << endl;
+//                        cerr << endl;
+//                    }
+                    add(dp[n][w][s], mul(mul(bn[n1 + n2][n1], dp[n1][w1][s1]), dp[n2][w2][s2]));
                 }
             }
         }
-//        cerr << "done" << endl;
         ll ret = 0;
-        REP(m, N) REP(s, S + 1) add(ret, dp[N][m][s], mod);
-        // TODO: print out non-zero ones...
+        REP(m, N) REP(s, S + 1) add(ret, dp[N][m][s]);
+
+//        FOR(n, 0, N) REP(m, N) REP(s, S + 1) {
+//            if (0 < dp[N][m][s])
+//                cerr << "dp[" << n << "][" << m << "][" << s << "] = " << dp[n][m][s] << endl;
+//        }
+
         return (int) ret;
     }
 };
@@ -179,11 +200,11 @@ int main( int argc, char* argv[] )
 {
     {
         BearPermutations theObject;
-        eq(8, theObject.countPermutations(2, 50, 71876209),2);
+        eq(8, theObject.countPermutations(2, 0, 71876209),2);
     }
     {
         BearPermutations theObject;
-        eq(7, theObject.countPermutations(3, 50, 71876209),2 * 3);
+        eq(7, theObject.countPermutations(3, 2, 71876209),2 * 3);
     }
     {
         BearPermutations theObject;
