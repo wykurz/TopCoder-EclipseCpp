@@ -234,6 +234,10 @@ int main( int argc, char* argv[] )
         BearPermutations theObject;
         eq(5, theObject.countPermutations(20, 30, 3),2);
     }
+    {
+        BearPermutations theObject;
+        eq(9, theObject.countPermutations(55, 67, 867907753),9880642);
+    }
     return 0;
 }
 // END CUT HERE
