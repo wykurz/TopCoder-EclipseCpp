@@ -136,7 +136,11 @@ constexpr int L = 100 + 1;
 
 ll bn[L][L];
 // count * min idx * value
-ll dp[L][L][L];
+ll dp[L][L][2 * L];
+// count * (value + min idx)
+ll dpL[L][L + L];
+// count * (value - min idx + (N - 1))
+ll dpR[L][L + L];
 
 class BearPermutations {
 public:
@@ -150,54 +154,40 @@ public:
         FOR(n, 1, N) FOR(m, 1, n) add(bn[n][m], bn[n - 1][m] + bn[n - 1][m - 1]);
         ZERO(dp);
         dp[0][0][0] = 1;
-        FOR(n, 1, N) FOR(n1, 0, n) {
-            int n2 = n - n1 - 1;
-            if (n2 < 0) continue;
-//            cerr << "n1: " << n1 << endl;
-//            cerr << "n2: " << n2 << endl;
-            REP(w1, N) REP(w2, N) {
-                int w = n1;
-//                cerr << "w1: " << w1 << endl;
-//                cerr << "w2: " << w2 << endl;
-
-                REP(s1, S + 1) REP(s2, S + 1) {
-//                    cerr << "s1: " << w1 << endl;
-//                    cerr << "s2: " << w2 << endl;
-
-                    int s = s1 + s2 + ((0 < n1 && 0 < n2) ? n1 + 1 + w2 - w1 : 0);
-
-//                    cerr << "n: " << n << endl;
-//                    cerr << "w: " << w << endl;
-//                    cerr << "s: " << s << endl;
-
-                    if (S < s) {
-//                        cerr << "break!" << endl;
-                        break;
-                    }
-
-//                    if (n == 3 && w == 1 && s == 0) {
-//                        cerr << "dp[" << n << "][" << w << "][" << s << "] += bn[" << n1 + n2 << "][" << n1 << "] * dp[" << n1 << "][" << w1 << "][" << s1 << "] * dp[" << n2 << "][" << w2 << "][" << s2 << "]" << endl;
-//                        cerr << dp[n][w][s] << " += " << bn[n1 + n2][n1] << " * " << dp[n1][w1][s1] << " * " << dp[n2][w2][s2] << endl;
-//                        cerr << endl;
-//                    }
-                    add(dp[n][w][s], mul(mul(bn[n1 + n2][n1], dp[n1][w1][s1]), dp[n2][w2][s2]));
+        ZERO(dpL);
+        ZERO(dpR);
+        FOR(n, 1, N) {
+            REP(w, N) REP(s, S + 1) {
+                add(dpL[n - 1][s - w + (N - 1)], dp[n - 1][w][s]);
+                add(dpR[n - 1][s + w], dp[n - 1][w][s]);
+            }
+            FOR(n1, 0, n - 1) {
+                const int n2 = n - n1 - 1;
+                const int w = n1;
+                if (n1 == 0 || n2 == 0) REP(s, S + 1) REP(w2, N) add(dp[n][w][s], dp[n1 + n2][w2][s]);
+                else REP(sw1, N + S + 1) REP(sw2, N + S + 1) {
+                    int s = sw1 + sw2 - (N - 1) + n1 + 1;
+                    if (S < s) continue;
+                    add(dp[n][w][s], mul(mul(bn[n1 + n2][n1], dpL[n1][sw1]), dpR[n2][sw2]));
                 }
             }
         }
         ll ret = 0;
-        REP(m, N) REP(s, S + 1) add(ret, dp[N][m][s]);
-
-//        FOR(n, 0, N) REP(m, N) REP(s, S + 1) {
-//            if (0 < dp[N][m][s])
-//                cerr << "dp[" << n << "][" << m << "][" << s << "] = " << dp[n][m][s] << endl;
-//        }
-
+        REP(w, N) REP(s, S + 1) add(ret, dp[N][w][s]);
         return (int) ret;
     }
 };
 // BEGIN CUT HERE
 int main( int argc, char* argv[] )
 {
+    {
+        BearPermutations theObject;
+        eq(9, theObject.countPermutations(55, 67, 867907753),9880642);
+    }
+    {
+        BearPermutations theObject;
+        eq(11, theObject.countPermutations(31, 100, 879828539),311969414);
+    }
     {
         BearPermutations theObject;
         eq(8, theObject.countPermutations(2, 0, 71876209),2);
@@ -210,6 +200,16 @@ int main( int argc, char* argv[] )
         BearPermutations theObject;
         eq(6, theObject.countPermutations(4, 50, 71876209),2 * 3 * 4);
     }
+    {
+        BearPermutations theObject;
+        eq(9, theObject.countPermutations(5, 100, 71876209),2 * 3 * 4 * 5);
+    }
+
+    {
+        BearPermutations theObject;
+        eq(10, theObject.countPermutations(4, 4, 71876209),2 * 3 * 4);
+    }
+
     {
         BearPermutations theObject;
         eq(0, theObject.countPermutations(3, 1, 71876209),4);
@@ -233,10 +233,6 @@ int main( int argc, char* argv[] )
     {
         BearPermutations theObject;
         eq(5, theObject.countPermutations(20, 30, 3),2);
-    }
-    {
-        BearPermutations theObject;
-        eq(9, theObject.countPermutations(55, 67, 867907753),9880642);
     }
     return 0;
 }
