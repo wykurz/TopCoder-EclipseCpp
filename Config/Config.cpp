@@ -14,6 +14,7 @@
 #include <tuple>
 #include <valarray>
 #include <cassert>
+#include <cstdint>
 #include <cstring>
 #include <typeinfo>
 #include <functional>
