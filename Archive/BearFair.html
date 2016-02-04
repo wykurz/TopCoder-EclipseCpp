@@ -1,0 +1,44 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>
+Limak is a grizzly bear.
+He is big and dreadful.
+You were chilling in the forest when you suddenly met him.
+It's very unfortunate for you.
+He will eat all your cookies unless you can demonstrate your mathematical skills.
+To test you, Limak is going to give you a puzzle to solve.
+</p>
+<br></br>
+<p>
+It's a well-known fact that Limak, as every bear, owns a set of numbers.
+You know some information about the set:
+<ul>
+<li>The elements of the set are distinct positive integers.</li>
+<li>The number of elements in the set is <b>n</b>. The number <b>n</b> is even.</li>
+<li>All elements are between 1 and <b>b</b>, inclusive: bears don't know numbers greater than <b>b</b>.</li>
+<li>The set contains exactly <b>n</b>/2 even elements and exactly <b>n</b>/2 odd elements, because grizzly bears only like sets with this property.</li>
+</ul>
+</p>
+<br></br>
+<p>
+Limak smiles mysteriously and gives you q hints about his set.
+The hints are numbered 0 through q-1.
+For each valid i, the hint number i is the following sentence:
+"If you only look at elements that are between 1 and <b>upTo</b>[i], inclusive, you will find exactly <b>quantity</b>[i] such elements in my set."
+</p>
+<br></br>
+<p>
+In a moment Limak will tell you the actual puzzle, but something doesn't seem right...
+That smile was very strange.
+You start to think about a possible reason.
+Maybe Limak cheated you?
+Or is he a fair grizzly bear?
+</p>
+<br></br>
+<p>
+You are given the ints <b>n</b> and <b>b</b>.
+You are also given the vector &lt;int&gt;s <b>upTo</b> and <b>quantity</b>.
+Return "fair" (quotes for clarity) if there exists at least one set that has all the required properties and matches all the given hints.
+Otherwise, return "unfair".
+</p></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>BearFair</td></tr><tr><td>Method:</td><td>isFair</td></tr><tr><td>Parameters:</td><td>int, int, vector &lt;int&gt;, vector &lt;int&gt;</td></tr><tr><td>Returns:</td><td>string</td></tr><tr><td>Method signature:</td><td>string isFair(int n, int b, vector &lt;int&gt; upTo, vector &lt;int&gt; quantity)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>n</b> will be between 2 and 50, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>n</b> will be even.</td></tr><tr><td align="center" valign="top">-</td><td><b>b</b> will be between <b>n</b> and 1000, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>q will be between 1 and 50, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>upTo</b> will have exactly q elements.</td></tr><tr><td align="center" valign="top">-</td><td><b>quantity</b> will have exactly q elements.</td></tr><tr><td align="center" valign="top">-</td><td>Each element in <b>upTo</b> will be between 1 and <b>b</b>, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element in <b>quantity</b> will be between 0 and <b>n</b>, inclusive.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>4</pre></td></tr><tr><td><pre>6</pre></td></tr><tr><td><pre>{3,6}</pre></td></tr><tr><td><pre>{2,4}</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;fair&quot;</pre></td></tr><tr><td><table><tr><td colspan="2">Limak is a fair bear. Some sets that match his hints are {1,3,4,6} and {1,2,4,5}.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>4</pre></td></tr><tr><td><pre>6</pre></td></tr><tr><td><pre>{3,6}</pre></td></tr><tr><td><pre>{2,3}</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;unfair&quot;</pre></td></tr><tr><td><table><tr><td colspan="2">The second hint is that exactly 3 elements are between 1 and 6 (inclusive).
+But there should be 4 elements in total, all between 1 and 6 (inclusive).
+In this situation Limak is clearly being unfair, there is no set that matches these hints.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>2</pre></td></tr><tr><td><pre>6</pre></td></tr><tr><td><pre>{1,2,3}</pre></td></tr><tr><td><pre>{1,1,2}</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;unfair&quot;</pre></td></tr><tr><td><table><tr><td colspan="2">The only set that matches the hints is the set {1,3}. However, this set violates the constraint that the number of odd elements must be <b>n</b>/2.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>50</pre></td></tr><tr><td><pre>1000</pre></td></tr><tr><td><pre>{736,205,264,235,273,40,901,37,900,424,122,517,820,402,669,279,455,921,774,923,107,936,484,171,248,
+186,970,231,321,902,606,24,451,585,823,270,361,292,128,521,689,683,270,726,980,652,996,909,196,357}</pre></td></tr><tr><td><pre>{35,9,9,9,9,3,46,3,46,18,7,25,39,18,32,9,20,49,37,49,7,49,24,8,9,8,49,9,12,46,29,2,20,29,39,9,16,11,7,27,33,32,9,34,49,32,50,47,8,16}</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;fair&quot;</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>4</pre></td></tr><tr><td><pre>1000</pre></td></tr><tr><td><pre>{400,600}</pre></td></tr><tr><td><pre>{4,0}</pre></td></tr></table></td></tr><tr><td><pre>Returns: &quot;unfair&quot;</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
