@@ -1,0 +1,48 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>
+George is in charge of building a fleet of spaceships.
+Each spaceship consists of <b>m</b> different parts, labeled from 1 to <b>m</b>.
+</p>
+
+<p>
+George has no parts at the moment but he has an unlimited supply of money.
+There are <b>n</b> workshops that can produce the parts he needs.
+The workshops can be described by the vector &lt;int&gt;s <b>k</b>, <b>a</b>, and <b>b</b>.
+For each valid i, there is a workshop that has the following limits:
+<ul>
+<li>The workshop has a limited amount of resources and therefore it can produce at most <b>k</b>[i] parts in total.</li>
+<li>The workshop can only produce parts with numbers between <b>a</b>[i] and <b>b</b>[i], inclusive.</li>
+</ul>
+Note that each workshop can create multiple copies of the same part, as long as the total number of parts produced by that workshop doesn't exceed <b>k</b>[i].
+</p>
+
+<p>
+Given these constraints, determine the maximum number of spaceships George can build.
+</p></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>FleetFunding</td></tr><tr><td>Method:</td><td>maxShips</td></tr><tr><td>Parameters:</td><td>int, vector &lt;int&gt;, vector &lt;int&gt;, vector &lt;int&gt;</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int maxShips(int m, vector &lt;int&gt; k, vector &lt;int&gt; a, vector &lt;int&gt; b)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td>n will be between 1 and 50, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>m will be between 1 and 10^5, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>k,a,b</b> will have exactly n elements each.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>k</b> will be between 1 and 10^6, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>a,b</b> will be between 1 and m, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>For each integer i from 0 to n-1, inclusive, <b>a</b>[i] will be less than or equal to <b>b</b>[i].</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>3</pre></td></tr><tr><td><pre>{2,2,2}</pre></td></tr><tr><td><pre>{1,2,1}</pre></td></tr><tr><td><pre>{3,3,2}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2">In this test case, each spaceship requires parts 1, 2, and 3.
+We have the following workshops:
+<ul>
+<li>Workshop 0 can produce at most 2 parts, each with a label between 1 and 3, inclusive.</li>
+<li>Workshop 1 can produce at most 2 parts, each with a label between 2 and 3, inclusive.</li>
+<li>Workshop 2 can produce at most 2 parts, each with a label between 1 and 2, inclusive.</li>
+</ul>
+We can build two complete spaceships.
+One possible solution:
+<ul>
+<li>Workshop 0 will produce a part with label 1 and a part with label 3.</li>
+<li>Workshop 1 will produce a part with label 2 and a part with label 3.</li>
+<li>Workshop 2 will produce a part with label 1 and a part with label 2.</li>
+</ul>
+Another possible solution:
+<ul>
+<li>Workshop 0 will produce two parts with label 2.</li>
+<li>Workshop 1 will produce two parts with label 3.</li>
+<li>Workshop 2 will produce two parts with label 1.</li>
+</ul></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>1</pre></td></tr><tr><td><pre>{10,9,8,7,6,5,4,3,2,1}</pre></td></tr><tr><td><pre>{1,1,1,1,1,1,1,1,1,1}</pre></td></tr><tr><td><pre>{1,1,1,1,1,1,1,1,1,1}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 55</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>10</pre></td></tr><tr><td><pre>{2,4,6,8,10,1,3,5,7,9}</pre></td></tr><tr><td><pre>{1,2,3,4,5,6,7,8,9,10}</pre></td></tr><tr><td><pre>{1,2,3,4,5,6,7,8,9,10}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 1</pre></td></tr><tr><td><table><tr><td colspan="2">Here we can buy a lot of different parts.
+The bottleneck is part number 6.
+This can only be produced by workshop 5, and this workshop can only build us a single copy of this part.
+Thus, we can only build a single spaceship.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>84457</pre></td></tr><tr><td><pre>{374778,169109,529984,498638,29462,465769,29285,394948,307944,459189,
+349316,766627,686851,404285,850199,359378,3014,248257,558856,27393,32370,
+574862,337134,965567,32223,935678,389898,973497,990575,483190,122899,
+857994,991217,149619,415870}</pre></td></tr><tr><td><pre>{92,4997,11,28545,933,210,2,124,114,4513,32959,1,57,17,13,133,1843,41851,
+3,9296,9757,28,3,769,10,11102,683,6173,11821,3982,214,2,4304,439,1998}</pre></td></tr><tr><td><pre>{81034,54474,70239,79597,47317,82938,83883,74652,84033,84422,84456,84457,
+81095,83743,79210,84255,84455,45596,84456,82959,67062,80330,44090,84445,
+84454,84450,45931,77190,83025,83567,83639,84333,83355,70982,84456}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 186</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>2</pre></td></tr><tr><td><pre>{1000000,1000000,1000000,1000000,1000000}</pre></td></tr><tr><td><pre>{1,1,1,2,2}</pre></td></tr><tr><td><pre>{1,1,2,2,2}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2500000</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
