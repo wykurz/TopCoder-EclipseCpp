@@ -1,0 +1,60 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><p>Bear Limak loves algorithms and tolerates data structures.
+Today he learned about Boruvka's algorithm.
+Boruvka's algorithm was the first polynomial-time algorithm to find the minimum spanning tree (MST).
+Moreover, it was pretty efficient because it worked in O(E log V).
+You can find a detailed description of this algorithm and its history at https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm.
+Below we give a short description of Boruvka's algorithm.
+This description should be used when solving this problem.</p>
+<br></br>
+<p>The input for Boruvka's algorithm is a simple connected undirected weighted graph G.
+(Here, "simple" means there are no loops and each pair of vertices is directly connected by at most one edge.)
+The edge weights are distinct positive integers from 1 to m, where m is the number of edges in the graph.</p>
+<br></br>
+<p>The minimum spanning tree of G is a subgraph H of G with the following properties:
+<ul>
+<li>H contains the same vertices as G.</li>
+<li>H is connected.</li>
+<li>The sum of weights of edges in H is as small as possible.</li>
+</ul></p>
+<br></br>
+<p>Here is Boruvka's algorithm in pseudocode:</p>
+<br></br>
+<pre>
+Initialize H to contain all vertices of G but no edges at all.
+
+While H is not connected yet:
+    For each component C in H:
+        Find the lightest edge in G that has exactly one endpoint in C.
+        Mark this edge for addition.
+
+    Add all marked edges to H.
+
+Return H.
+</pre>
+<br></br>
+<p>Note that the algorithm is deterministic: the weights are all distinct, hence each edge we mark for addition is uniquely determined.</p>
+<br></br>
+<p>You are given ints <b>n</b>, <b>m</b>, and <b>k</b>.
+Your task is to construct one arbitrary graph G with the following properties:
+<ul>
+<li>G is a valid input for Boruvka's algorithm, as defined above.</li>
+<li>G has exactly <b>n</b> vertices and <b>m</b> edges. The vertices are numbered 1 through <b>n</b>. The edge weights are 1 through <b>m</b>.</li>
+<li>Boruvka's algorithm will find the MST of G in exactly <b>k</b> rounds. (A round is a single iteration of the while-cycle in the pseudocode above.)</li>
+</ul></p>
+<br></br>
+<p>If no such G exists, return the vector &lt;int&gt; {-1}.
+(That is, a vector &lt;int&gt; with a single element that is minus one.)</p>
+<br></br>
+<p>Otherwise, return a vector &lt;int&gt; with the description of your chosen G.
+This vector &lt;int&gt; should have 2*<b>m</b> elements: two for each edge.
+Let answer[] denote the returned vector &lt;int&gt;.
+For each w between 1 and <b>m</b>, inclusive, take the edge with weight w and store its endpoints into answer[2*w-2] and answer[2*w-1].</p></td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>BearSpans</td></tr><tr><td>Method:</td><td>findAnyGraph</td></tr><tr><td>Parameters:</td><td>int, int, int</td></tr><tr><td>Returns:</td><td>vector &lt;int&gt;</td></tr><tr><td>Method signature:</td><td>vector &lt;int&gt; findAnyGraph(int n, int m, int k)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>n</b> will be between 2 and 1000, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>m</b> will be between <b>n</b>-1 and 1000, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td><b>m</b> will be not greater than <b>n</b>*(<b>n</b>-1)/2.</td></tr><tr><td align="center" valign="top">-</td><td><b>k</b> will be between 1 and 1000, inclusive.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>17</pre></td></tr><tr><td><pre>22</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: 
+{1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1, 9, 1, 10, 1, 11, 1, 12,
+ 1, 13, 1, 14, 1, 15, 1, 16, 1, 17, 2, 3, 2, 8, 3, 9, 8, 9, 10, 12, 12,
+ 14 }</pre></td></tr><tr><td><table><tr><td colspan="2">We were asked to find a graph with 17 vertices and 22 edges that will be fully solved in one round of Boruvka's algorithm.
+We can easily verify that the graph given in the example output does have the property.
+The minimum spanning tree of this graph consists of the edges 1-x for all x between 2 and 17, inclusive.
+For each x, the edge 1-x is marked for addition in the first round: as the cheapest edge that leaves vertex x.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>9</pre></td></tr><tr><td><pre>12</pre></td></tr><tr><td><pre>3</pre></td></tr></table></td></tr><tr><td><pre>Returns: {6, 5, 7, 6, 1, 2, 3, 4, 8, 9, 3, 5, 7, 4, 1, 9, 6, 2, 6, 1, 1, 8, 4, 5 }</pre></td></tr><tr><td><table><tr><td colspan="2">Let's take a loot at the graph given in the example output.
+After the first round we have four components: {1,2}, {3,4}, {5,6,7}, {8,9}.
+After the second round we have two components: {1,2,8,9} and {3,4,5,6,7}.
+The third round connects the two remaining componenets so we get 3 rounds in total.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>9</pre></td></tr><tr><td><pre>12</pre></td></tr><tr><td><pre>7</pre></td></tr></table></td></tr><tr><td><pre>Returns: {-1 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>1000</pre></td></tr><tr><td><pre>999</pre></td></tr><tr><td><pre>970</pre></td></tr></table></td></tr><tr><td><pre>Returns: {-1 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>2</pre></td></tr><tr><td><pre>1</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: {1, 2 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">5)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>3</pre></td></tr><tr><td><pre>2</pre></td></tr><tr><td><pre>1</pre></td></tr></table></td></tr><tr><td><pre>Returns: {1, 2, 1, 3 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">6)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>3</pre></td></tr><tr><td><pre>3</pre></td></tr><tr><td><pre>2</pre></td></tr></table></td></tr><tr><td><pre>Returns: {-1 }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
