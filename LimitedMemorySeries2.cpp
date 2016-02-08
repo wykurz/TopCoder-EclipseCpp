@@ -144,40 +144,22 @@ constexpr int L = N / K + 1;
 class LimitedMemorySeries2 {
 public:
 
-    ll pmax1v[L] = {-1};
-    int pmax1i[L] = {-1};
-
-    ll pmax2v[K] = {-1};
-    int pmax2i[K] = {-1};
-
-    int getSum(int N, long long x0, long long a, long long b)
+    template <typename Func>
+    int calc(int start, Func next, int n)
     {
-        auto next = [=](ll prev_) {
-            // return ((prev_ ^ a) + b) & (PW(50) - 1);
-            return (prev_ + 1) % 5;
-        };
-
-        auto nextr = [=](ll prev_) {
-            // return ((prev_ ^ a) + b) & (PW(50) - 1);
-            return (prev_ - 1 + 5) % 5;
-        };
-
-        auto funcs = make_tuple(next, nextr);
-
-        ll curr = x0;
-        FOR(i, 1, N - 1) curr = next(curr);
-        ll last = curr; // TODO
-
-        pmax1v[0] = x0;
+        ll pmax1v[L] = {-1};
+        int pmax1i[L] = {-1};
+        ll pmax2v[K] = {-1};
+        int pmax2i[K] = {-1};
+        pmax1v[0] = start;
         pmax1i[0] = 0;
-        pmax2v[0] = x0;
+        pmax2v[0] = start;
         pmax2i[0] = 0;
-        ll ret = 0;
-
         int pm1i = 0;
         int pm2i = 0;
-        curr = x0;
-        FOR(i, 1, N - 1) {
+        ll curr = start;
+        ll ret = 0;
+        FOR(i, 1, n - 1) {
             ll prev = curr;
             curr = next(prev);
             pm2i = min(i % K, pm2i + 1);
@@ -186,6 +168,7 @@ public:
             pmax2i[pm2i] = i;
             if (0 < pm2i) {
                 ret += i - pmax2i[pm2i - 1] - 1;
+                ret %= mod;
                 continue;
             }
             pm1i = min(i / K, pm1i + 1);
@@ -204,11 +187,30 @@ public:
                     ++mi;
                 }
                 ret += i - lmi - 1;
+                ret %= mod;
                 continue;
             }
             ret += i;
+            ret %= mod;
         }
         return ret;
+    }
+
+    int getSum(int n, long long first, long long a, long long b)
+    {
+        ll m = PW(50) - 1;
+        auto next = [=](ll prev_) {
+            return ((prev_ ^ a) + b) & m;
+        };
+        auto nextr = [=](ll prev_) {
+            return (((prev_ - b + m + 1) & m) ^ a) & m;
+        };
+        ll curr = first;
+        FOR(i, 1, n - 1) curr = next(curr);
+        ll last = curr;
+//        cerr << calc(first, next, n) << endl;
+//        cerr << calc(last, nextr, n) << endl;
+        return calc(first, next, n) + calc(last, nextr, n);
     }
 };
 // BEGIN CUT HERE
@@ -216,30 +218,20 @@ int main( int argc, char* argv[] )
 {
     {
         LimitedMemorySeries2 theObject;
-        eq(0, theObject.getSum(10, 0L, 0L, 0L), 20);
+        eq(0, theObject.getSum(6, 2L, 23L, 1L),2);
     }
-
-//    {
-//        LimitedMemorySeries2 theObject;
-//        eq(0, theObject.getSum(10, 0L, 0L, 0L), 16);
-//    }
-
-//    {
-//        LimitedMemorySeries2 theObject;
-//        eq(0, theObject.getSum(6, 2L, 23L, 1L),2);
-//    }
-//    {
-//        LimitedMemorySeries2 theObject;
-//        eq(1, theObject.getSum(100, 0L, 0L, 1L),0);
-//    }
-//    {
-//        LimitedMemorySeries2 theObject;
-//        eq(2, theObject.getSum(234234, 1125899906842623L, 123456789123456L, 987654321549687L),1144970);
-//    }
-//    {
-//        LimitedMemorySeries2 theObject;
-//        eq(3, theObject.getSum(10000000, 12345678912345L, 98765094309812L, 34893049812392L),65420804);
-//    }
+    {
+        LimitedMemorySeries2 theObject;
+        eq(1, theObject.getSum(100, 0L, 0L, 1L),0);
+    }
+    {
+        LimitedMemorySeries2 theObject;
+        eq(2, theObject.getSum(234234, 1125899906842623L, 123456789123456L, 987654321549687L),1144970);
+    }
+    {
+        LimitedMemorySeries2 theObject;
+        eq(3, theObject.getSum(10000000, 12345678912345L, 98765094309812L, 34893049812392L),65420804);
+    }
     return 0;
 }
 // END CUT HERE
