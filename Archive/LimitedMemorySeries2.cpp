@@ -135,82 +135,35 @@ template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b
 template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
 
 constexpr ll mod = 1e9 + 7;
-// constexpr int N = 1e7 + 1;
-constexpr int N = 20;
-// constexpr int K = 400;
-constexpr int K = 3;
-constexpr int L = N / K + 1;
 
 class LimitedMemorySeries2 {
 public:
 
-    template <typename Func>
-    int calc(int start, Func next, int n)
+    int getSum(int N, long long F, long long A, long long B)
     {
-        ll pmax1v[L] = {-1};
-        int pmax1i[L] = {-1};
-        ll pmax2v[K] = {-1};
-        int pmax2i[K] = {-1};
-        pmax1v[0] = start;
-        pmax1i[0] = 0;
-        pmax2v[0] = start;
-        pmax2i[0] = 0;
-        int pm1i = 0;
-        int pm2i = 0;
-        ll curr = start;
+        ll M = PW(50) - 1;
+        auto next = [=](ll x) {
+            return ((x ^ A) + B) & M;
+        };
+        auto prev = [=](ll x) {
+            return (((x - B + M + 1) & M) ^ A) & M;
+        };
         ll ret = 0;
-        FOR(i, 1, n - 1) {
-            ll prev = curr;
-            curr = next(prev);
-            pm2i = min(i % K, pm2i + 1);
-            while (0 < pm2i && pmax2v[pm2i - 1] < curr) --pm2i;
-            pmax2v[pm2i] = curr;
-            pmax2i[pm2i] = i;
-            if (0 < pm2i) {
-                ret += i - pmax2i[pm2i - 1] - 1;
-                ret %= mod;
-                continue;
+        ll x = F;
+        REP(i, N) {
+            int d = 0;
+            ll px = prev(x);
+            ll nx = next(x);
+            while (0 < i - d && i + d < N - 1 && px < x && nx < x) {
+                ++d;
+                px = prev(px);
+                nx = next(nx);
             }
-            pm1i = min(i / K, pm1i + 1);
-            // We know we're max in current bucket.
-            while (0 < pm1i && pmax1v[pm1i - 1] < curr) --pm1i;
-            pmax1v[pm1i] = curr;
-            pmax1i[pm1i] = i;
-            if (0 < pm1i) {
-                int mv = pmax1v[pm1i - 1];
-                int mi = pmax1i[pm1i - 1];
-                int lmi = mi;
-                REP(j, 2 * K) {
-                    if (i <= mi) break;
-                    if (curr <= mv) lmi = mi;
-                    mv = next(mv);
-                    ++mi;
-                }
-                ret += i - lmi - 1;
-                ret %= mod;
-                continue;
-            }
-            ret += i;
+            ret += d;
             ret %= mod;
+            x = next(x);
         }
         return ret;
-    }
-
-    int getSum(int n, long long first, long long a, long long b)
-    {
-        ll m = PW(50) - 1;
-        auto next = [=](ll prev_) {
-            return ((prev_ ^ a) + b) & m;
-        };
-        auto nextr = [=](ll prev_) {
-            return (((prev_ - b + m + 1) & m) ^ a) & m;
-        };
-        ll curr = first;
-        FOR(i, 1, n - 1) curr = next(curr);
-        ll last = curr;
-//        cerr << calc(first, next, n) << endl;
-//        cerr << calc(last, nextr, n) << endl;
-        return calc(first, next, n) + calc(last, nextr, n);
     }
 };
 // BEGIN CUT HERE
