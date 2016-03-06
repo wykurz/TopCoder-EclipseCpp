@@ -1,0 +1,33 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>BottomCoder has a CEO and N employees.
+The CEO has number 0, the employees are numbered 1 through N.
+Each employee can be described by three numbers: their salary, their productivity, and the number of their direct manager.
+For each employee E, employee E's manager has a number smaller than E.
+Hence, the company has a tree-like hierarchy.
+<br></br>
+You are given the description of BottomCoder in the vector &lt;int&gt;s <b>manager</b>, <b>salary</b>, and <b>productivity</b>.
+For each i between 1 and N, inclusive, employee i is described by the values <b>manager</b>[i-1], <b>salary</b>[i-1], and <b>productivity</b>[i-1].
+<br></br>
+The profit from an employee can be computed as the employee's productivity minus their salary.
+Note that the profit from an employee can be negative.
+The total profit of the company is the sum of profits of its employees.
+<br></br>
+The CEO would like to increase the total profit of the company by firing some of its employees.
+However, if he fires an employee E, he must also fire all employees who reported to E.
+For example, if he fires your manager, he must fire you as well.
+As another example, if he fires the manager of your manager, he must fire your manager and therefore he must also fire you.
+<br></br>
+Find a valid way of firing some (possibly none, possibly all) employees that maximizes the profit of the resulting company.
+Return the total profit after the selected employees are fired.</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>FiringEmployees</td></tr><tr><td>Method:</td><td>fire</td></tr><tr><td>Parameters:</td><td>vector &lt;int&gt;, vector &lt;int&gt;, vector &lt;int&gt;</td></tr><tr><td>Returns:</td><td>int</td></tr><tr><td>Method signature:</td><td>int fire(vector &lt;int&gt; manager, vector &lt;int&gt; salary, vector &lt;int&gt; productivity)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Notes</h3></td></tr><tr><td align="center" valign="top">-</td><td>The CEO of BottomCoder has both salary and productivity equal to zero. The CEO cannot be fired.</td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>manager</b>, <b>salary</b> and <b>productivity</b> will contain N elements each.</td></tr><tr><td align="center" valign="top">-</td><td><b>manager</b> will contain between 1 and 2500 elements inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>salary</b> will be between 1 and 10,000 inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element of <b>productivity</b> will be between 1 and 10,000 inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>The i-th element of <b>manager</b> will be between 0 and i inclusive.</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{0,0,0}</pre></td></tr><tr><td><pre>{1,2,3}</pre></td></tr><tr><td><pre>{3,2,1}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 2</pre></td></tr><tr><td><table><tr><td colspan="2">The CEO has three direct employees.<br></br>
+The first one has a salary of 1 and a productivity of 3.<br></br>
+The second one has a salary of 2 and a productivity of 2.<br></br>
+The third one has a salary of 3 and a productivity of 1.<br></br>
+The CEO should fire employee 3.<br></br>
+The CEO can also fire employee 2, but it does not matter: here, firing is equally good as keeping.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{0,1,2,3}</pre></td></tr><tr><td><pre>{4,3,2,1}</pre></td></tr><tr><td><pre>{2,3,4,5}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 4</pre></td></tr><tr><td><table><tr><td colspan="2">Employee 1 has a negative profit: 2-4 = (-2).<br></br>
+The other three employees have nonnegative profits: 0, 2, and 4.
+<br></br><br></br>
+It would seem that the CEO should fire employee 1.<br></br>
+However, if he does that, he would have to fire all four employees, because 1 is (either directly or indirectly) the manager of each of them.<br></br>
+This would leave the CEO with an empty company that has profit 0.
+<br></br><br></br>
+The optimal strategy is not to fire anyone.<br></br>
+The total profit in this case will be (-2) + 0 + 2 + 4 = 4.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{0,1}</pre></td></tr><tr><td><pre>{1,10}</pre></td></tr><tr><td><pre>{5,5}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 4</pre></td></tr><tr><td><table><tr><td colspan="2">In this case the best choice is to fire employee number 2 and keep employee number 1.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{0,1,2,1,2,3,4,2,3}</pre></td></tr><tr><td><pre>{5,3,6,8,4,2,4,6,7}</pre></td></tr><tr><td><pre>{2,5,7,8,5,3,5,7,9}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 6</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{0,0,1,1,2,2}</pre></td></tr><tr><td><pre>{1,1,1,2,2,2}</pre></td></tr><tr><td><pre>{2,2,2,1,1,1}</pre></td></tr></table></td></tr><tr><td><pre>Returns: 3</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
