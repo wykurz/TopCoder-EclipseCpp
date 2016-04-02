@@ -144,9 +144,11 @@ struct SetUnion
 
     void merge(int u, int v)
     {
-        auto w = min(data[u], data[v]);
-        data[u] = w;
-        data[v] = w;
+        auto ru = root(u);
+        auto rv = root(v);
+        auto w = min(ru, rv);
+        data[ru] = w;
+        data[rv] = w;
     }
 
     bool conn(int u, int v)
@@ -195,11 +197,9 @@ ostream& operator<<(ostream& ostr, const SetUnion<N, T>& su)
     return ostr;
 }
 
-constexpr int N = 10;
-
 class FoxAirline2 {
 public:
-    using su = SetUnion<10>;
+    using su = SetUnion<12>;
     string ok(bool yes)
     {
         return yes ? "Possible" : "Impossible";
@@ -216,20 +216,24 @@ public:
         };
         function<bool(int, const su&, const su&)> dfs = [&a, &b, m, &done, &dfs](int e, const su& t1, const su& t2) {
             if (e == m) {
-                cerr << "e  : " << e << endl;
-                cerr << " t1: " << t1 << endl;
-                cerr << " t2: " << t2 << endl;
+//                cerr << "e  : " << e << endl;
+//                cerr << " t1: " << t1 << endl;
+//                cerr << " t2: " << t2 << endl;
                 return done(t1, t2);
             }
             if (!t1.conn(a[e], b[e])) {
                 auto tn = t1;
                 tn.merge(a[e], b[e]);
+                // cerr << a[e] << "-" << b[e] << " => t1" << endl;
                 if (dfs(e + 1, tn, t2)) return true;
+                // cerr << " <-- " << a[e] << "-" << b[e] << endl;
             }
             if (!t2.conn(a[e], b[e])) {
                 auto tn = t2;
                 tn.merge(a[e], b[e]);
+                // cerr << a[e] << "-" << b[e] << " => t2" << endl;
                 if (dfs(e + 1, t1, tn)) return true;
+                // cerr << " <-- " << a[e] << "-" << b[e] << endl;
             }
             if (t1.conn(a[e], b[e]) && t2.conn(a[e], b[e])) return dfs(e + 1, t1, t2);
             return false;
@@ -242,69 +246,77 @@ public:
 int main( int argc, char* argv[] )
 {
     {
-        int aARRAY[] = {0, 1, 2, 3, 0, 1, 2, 3};
+        int aARRAY[] = {0, 1, 2, 0, 1, 2};
         vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1, 2, 3, 0, 1, 2, 3, 0};
+        int bARRAY[] = {1, 2, 3, 2, 3, 3};
         vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
         FoxAirline2 theObject;
         eq(6, theObject.isPossible(4, a, b),"Possible");
     }
-//    {
-//        int aARRAY[] = {8, 7, 5, 9, 2, 9, 0, 1, 6, 2, 3, 0, 1, 3, 1, 2, 1, 8};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {5, 2, 4, 7, 5, 3, 1, 9, 8, 9, 9, 9, 7, 8, 8, 4, 5, 6};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(6, theObject.isPossible(10, a, b),"Possible");
-//    }
-//    {
-//        int aARRAY[] = {0,0,0,1,1,2,2,3};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {1,2,4,2,4,3,4,4};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(2, theObject.isPossible(5, a, b),"Possible");
-//    }
-//    {
-//        int aARRAY[] = {0,1,1};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {1,0,0};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(3, theObject.isPossible(2, a, b),"Possible");
-//    }
-//    {
-//        int aARRAY[] = {0};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {1};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(5, theObject.isPossible(2, a, b),"Impossible");
-//    }
-//    {
-//        int aARRAY[] = {0,0,0,1,1,2};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {1,2,3,2,3,3};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(0, theObject.isPossible(4, a, b),"Possible");
-//    }
-//    {
-//        int aARRAY[] = {0,0,0,0,1,1,1,2,2,3,0};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {1,2,3,4,2,3,4,3,4,4,5};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(1, theObject.isPossible(6, a, b),"Impossible");
-//    }
-//    {
-//        int aARRAY[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8};
-//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-//        int bARRAY[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9, 6, 7, 8, 9, 7, 8, 9, 8, 9, 9};
-//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-//        FoxAirline2 theObject;
-//        eq(4, theObject.isPossible(10, a, b),"Possible");
-//    }
+    {
+        int aARRAY[] = {0, 1, 2, 3, 4, 0, 1, 2, 3, 4};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1, 2, 3, 4, 5, 2, 3, 4, 5, 0};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(6, theObject.isPossible(6, a, b),"Possible");
+    }
+    {
+        int aARRAY[] = {8, 7, 5, 9, 2, 9, 0, 1, 6, 2, 3, 0, 1, 3, 1, 2, 1, 8};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {5, 2, 4, 7, 5, 3, 1, 9, 8, 9, 9, 9, 7, 8, 8, 4, 5, 6};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(6, theObject.isPossible(10, a, b),"Possible");
+    }
+    {
+        int aARRAY[] = {0,0,0,1,1,2,2,3};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1,2,4,2,4,3,4,4};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(2, theObject.isPossible(5, a, b),"Possible");
+    }
+    {
+        int aARRAY[] = {0,1,1};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1,0,0};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(3, theObject.isPossible(2, a, b),"Possible");
+    }
+    {
+        int aARRAY[] = {0};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(5, theObject.isPossible(2, a, b),"Impossible");
+    }
+    {
+        int aARRAY[] = {0,0,0,1,1,2};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1,2,3,2,3,3};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(0, theObject.isPossible(4, a, b),"Possible");
+    }
+    {
+        int aARRAY[] = {0,0,0,0,1,1,1,2,2,3,0};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1,2,3,4,2,3,4,3,4,4,5};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(1, theObject.isPossible(6, a, b),"Impossible");
+    }
+    {
+        int aARRAY[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8};
+        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+        int bARRAY[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9, 6, 7, 8, 9, 7, 8, 9, 8, 9, 9};
+        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+        FoxAirline2 theObject;
+        eq(4, theObject.isPossible(10, a, b),"Possible");
+    }
     return 0;
 }
 // END CUT HERE
