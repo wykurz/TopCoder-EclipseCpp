@@ -134,64 +134,150 @@ using sstrm = stringstream;
 template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b; }
 template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
 
-const int dd[] = {1, 0, -1, 0};
+template <int N, typename T=char>
+struct SetUnion
+{
+    SetUnion()
+    {
+        REP(i, N) data[i] = i;
+    }
+
+    void merge(int u, int v)
+    {
+        auto w = std::min(data[u], data[v]);
+        data[u] = w;
+        data[v] = w;
+    }
+
+    bool conn(int u, int v)
+    {
+        auto ru = root(u);
+        auto rv = root(v);
+        return ru == rv;
+    }
+
+    template<int N2, typename T2>
+    friend ostream& operator<<(ostream& ostr, SetUnion<N2, T2>& su);
+
+  private:
+    int root(int u)
+    {
+        auto r = data[u];
+        while (r != data[r]) r = data[r];
+        while (u != data[u]) {
+            auto t = data[u];
+            data[u] = r;
+            u = t;
+        }
+        return r;
+    }
+    array<T, N> data;
+};
+
+template<int N, typename T>
+ostream& operator<<(ostream& ostr, SetUnion<N, T>& su)
+{
+    ostr << "[ ";
+    REP(i, N) ostr << su.root(i) << " ";
+    ostr << "]";
+    return ostr;
+}
 
 constexpr int N = 10;
+constexpr int M = 50;
 constexpr int L = 1024;
-bool mem[L];
-bool G[N][N];
+int G[N][N];
+
 
 class FoxAirline2 {
 public:
+    using su = SetUnion<10>;
+    struct State
+    {
+        int nvis = 0;
+        vector<bool> vis = vector<bool>(N);
+        su t1, t2;
+    };
     string ok(bool yes)
     {
         return yes ? "Possible" : "Impossible";
     }
-    void f(int v)
-    {
-
-    }
     string isPossible(int n, vector <int> a, vector <int> b)
     {
-        ZERO(mem);
         ZERO(G);
-        REP(i, a.size()) {
-            G[a[i]][b[i]] = true;
-            G[b[i]][a[i]] = true;
+        int m = a.size();
+        REP(i, m) {
+            ++G[a[i]][b[i]];
+            ++G[b[i]][a[i]];
         }
-        mem[0] = true;
-        FOR(bc, 1, 10) FOR(m, 1, 1024) if (BCNT(m) == bc) {
-            REP(i, 10) if (mem[(!PW(i) & m)]) {
-                REP(j, 10) if ((PW(j) & m) && G[i][j]) {
-                    mem[m] = true;
+        auto allIn = [n](su& t) {
+            REP(v, n) if (!t.conn(0, v)) return false;
+            return true;
+        };
+        auto done = [&allIn](su& t1, su& t2) {
+            return allIn(t1) && allIn(t2);
+        };
+        function<bool(int, int, State&)> dfs = [n, m, &dfs](int prev, int u, State& s) {
+            cerr << "in : " << u << endl;
+            cerr << " t1: " << s.t1 << endl;
+            cerr << " t2: " << s.t2 << endl;
+            if (s.vis[u]) {
+                cerr << "ret -> : " << prev << endl;
+                return false;
+            }
+            ++s.nvis;
+            s.vis[u] = true;
+            REP(v, n) if (prev != v && 0 < G[u][v]) {
+                if (1 < G[u][v]) {
+                    cerr << "b0" << endl;
+                    s.t1.merge(u, v);
+                    s.t2.merge(u, v);
+                    if (dfs(u, v, s)) {
+                        cerr << "ret -> : " << prev << endl;
+                        return true;
+                    }
+                }
+                else {
+                    // G[u][v] == 1
+                    if (!s.t1.conn(u, v) && !s.t2.conn(u, v)) {
+                        cerr << "b1" << endl;
+                        auto s2 = s;
+                        s2.t1.merge(u, v);
+                        if (dfs(u, v, s2)) {
+                            cerr << "ret -> : " << prev << endl;
+                            return true;
+                        }
+                    }
+                    else if (!s.t1.conn(u, v)) {
+                        cerr << "b2" << endl;
+                        s.t1.merge(u, v);
+                        if (dfs(u, v, s)) {
+                            cerr << "ret -> : " << prev << endl;
+                            return true;
+                        }
+                    }
+                    if (!s.t2.conn(u, v)) {
+                        cerr << "b3" << endl;
+                        s.t2.merge(u, v);
+                        if (dfs(u, v, s)) {
+                            cerr << "ret -> : " << prev << endl;
+                            return true;
+                        }
+                    }
                 }
             }
-        }
-        REP(m, PW(n)) if (mem[m] && mem[(PW(n) - 1) & !m]) {
-            return ok(true);
-        }
-        return ok(false);
+            cerr << "ret -> : " << prev << endl;
+            if (s.nvis < n) return false;
+            REP(v, n) if (!s.t1.conn(0, v) || !s.t2.conn(0, v)) return false;
+            return true;
+        };
+        State s;
+        return ok(dfs(-1, 0, s));
     }
 };
 // BEGIN CUT HERE
 int main( int argc, char* argv[] )
 {
-    {
-        int aARRAY[] = {0,0,0,1,1,2};
-        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1,2,3,2,3,3};
-        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-        FoxAirline2 theObject;
-        eq(0, theObject.isPossible(4, a, b),"Possible");
-    }
-    {
-        int aARRAY[] = {0,0,0,0,1,1,1,2,2,3,0};
-        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1,2,3,4,2,3,4,3,4,4,5};
-        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-        FoxAirline2 theObject;
-        eq(1, theObject.isPossible(6, a, b),"Impossible");
-    }
     {
         int aARRAY[] = {0,0,0,1,1,2,2,3};
         vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
@@ -200,30 +286,46 @@ int main( int argc, char* argv[] )
         FoxAirline2 theObject;
         eq(2, theObject.isPossible(5, a, b),"Possible");
     }
-    {
-        int aARRAY[] = {0,1,1};
-        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1,0,0};
-        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-        FoxAirline2 theObject;
-        eq(3, theObject.isPossible(2, a, b),"Possible");
-    }
-    {
-        int aARRAY[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8};
-        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9, 6, 7, 8, 9, 7, 8, 9, 8, 9, 9};
-        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-        FoxAirline2 theObject;
-        eq(4, theObject.isPossible(10, a, b),"Possible");
-    }
-    {
-        int aARRAY[] = {0};
-        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
-        int bARRAY[] = {1};
-        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
-        FoxAirline2 theObject;
-        eq(5, theObject.isPossible(2, a, b),"Impossible");
-    }
+//    {
+//        int aARRAY[] = {0,1,1};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1,0,0};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        FoxAirline2 theObject;
+//        eq(3, theObject.isPossible(2, a, b),"Possible");
+//    }
+//    {
+//        int aARRAY[] = {0};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        FoxAirline2 theObject;
+//        eq(5, theObject.isPossible(2, a, b),"Impossible");
+//    }
+//    {
+//        int aARRAY[] = {0,0,0,1,1,2};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1,2,3,2,3,3};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        FoxAirline2 theObject;
+//        eq(0, theObject.isPossible(4, a, b),"Possible");
+//    }
+//    {
+//        int aARRAY[] = {0,0,0,0,1,1,1,2,2,3,0};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1,2,3,4,2,3,4,3,4,4,5};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        FoxAirline2 theObject;
+//        eq(1, theObject.isPossible(6, a, b),"Impossible");
+//    }
+//    {
+//        int aARRAY[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 7, 7, 8};
+//        vector <int> a( aARRAY, aARRAY+ARRSIZE(aARRAY) );
+//        int bARRAY[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9, 3, 4, 5, 6, 7, 8, 9, 4, 5, 6, 7, 8, 9, 5, 6, 7, 8, 9, 6, 7, 8, 9, 7, 8, 9, 8, 9, 9};
+//        vector <int> b( bARRAY, bARRAY+ARRSIZE(bARRAY) );
+//        FoxAirline2 theObject;
+//        eq(4, theObject.isPossible(10, a, b),"Possible");
+//    }
     return 0;
 }
 // END CUT HERE
