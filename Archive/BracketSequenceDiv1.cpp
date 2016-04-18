@@ -134,55 +134,53 @@ using sstrm = stringstream;
 template<typename S, typename T> inline void chmin(S& a, T b) { if (b < a) a = b; }
 template<typename S, typename T> inline void chmax(S& a, T b) { if (a < b) a = b; }
 
-ll dp[40][40][40];
+ll dp[42][42];
 
 char t[256];
 
 class BracketSequenceDiv1 {
 public:
-    string s;
-    ll f(bool need, int i, int j)
+    ll count(string s)
     {
-        if (j <= i) return need ? -1 : 0;
-        if (-1 != dp[need][i][j]) return dp[need][i][j];
-        ll res = 0;
-        if (t[int(s[i])] == s[j]) res += f(false, i + 1, j - 1);
-        auto val = f(need, i + 1, j);
-        res += -1 != val ? val : 0;
-        val = f(need, i, j - 1);
-        res += -1 != val ? val : 0;
-        val = f(need, i + 1, j - 1);
-        res -= -1 != val ? val : 0;
-        if ((j - i) % 2 == 1) {
-            bool ok = true;
-            REP(k, j - i / 2 + 1) {
-                if (j - k < i + k) break;
-                if (s[i + k] == ')' || s[i + k] == ']' || t[int(s[i + k])] != s[j - k]) {
-                    ok = false;
-                    break;
-                }
-            }
-            if (ok) res += 1;
-        }
-        dp[need][i][j] = res;
-        return res;
-    }
-    ll count(string s_)
-    {
-        FILL3D(dp, -1);
         t['('] = ')';
         t[')'] = 'x';
         t['['] = ']';
         t[']'] = 'x';
-        s = s_;
-        auto res = f(true, 0, s.size() - 1);
-        REP(z, 2) REP(i, s.size()) REP(j, s.size()) cerr << z << ":: " << i << ", " << j << ": " << dp[z][i][j] << endl;
-        return res;
+        int n = s.size();
+        FILL2D(dp, 1);
+        FOR(len, 1, n) REP(i1, n) {
+            int j1 = i1 + len;
+            if (n <= j1) continue;
+            ll res = 0;
+            FOR(i2, i1, j1) FOR(j2, i2 + 1, j1) {
+                if (t[int(s[i2])] == s[j2]) {
+                    // cerr << "1) dp[" << i1 << "][" << j1 << "] += " << dp[i2 + 1][j2 - 1] << endl;
+                    res += dp[i2 + 1][j2 - 1];
+                }
+            }
+            FOR(i2, i1, j1) FOR(j2, i2 + 1, j1) {
+                if (t[int(s[i2])] != s[j2]) continue;
+                FOR(i3, j2 + 1, j1) FOR(j3, i3 + 1, j1) {
+                    if (t[int(s[i3])] == s[j3]) {
+                        // cerr << "2) dp[" << i1 << "][" << j1 << "] += " << dp[i2 + 1][j2 - 1] * dp[i3 + 1][j3 - 1] << endl;
+                        res += dp[i2 + 1][j2 - 1] * dp[j2 + 1][i3 - 1] * dp[i3 + 1][j3 - 1];
+                    }
+                }
+            }
+            // cerr << "   dp[" << i1 << "][" << j1 << "] := " << res << endl;
+            dp[i1][j1] += res;
+        }
+
+        return dp[0][n - 1] - 1;
     }
 };
 // BEGIN CUT HERE
 int main( int argc, char* argv[] )
 {
+    {
+        BracketSequenceDiv1 theObject;
+        eq<ll>(5, theObject.count("[(())]"),11L);
+    }
     {
         BracketSequenceDiv1 theObject;
         eq<ll>(0, theObject.count("()[]"),3L);
@@ -191,18 +189,18 @@ int main( int argc, char* argv[] )
         BracketSequenceDiv1 theObject;
         eq<ll>(1, theObject.count("())"),2L);
     }
-//    {
-//        BracketSequenceDiv1 theObject;
-//        eq<ll>(2, theObject.count("()()"),4L);
-//    }
-//    {
-//        BracketSequenceDiv1 theObject;
-//        eq<ll>(3, theObject.count("([)]"),2L);
-//    }
-//    {
-//        BracketSequenceDiv1 theObject;
-//        eq<ll>(4, theObject.count("())[]][]([]()]]()]]]"),3854L);
-//    }
+    {
+        BracketSequenceDiv1 theObject;
+        eq<ll>(2, theObject.count("()()"),4L);
+    }
+    {
+        BracketSequenceDiv1 theObject;
+        eq<ll>(3, theObject.count("([)]"),2L);
+    }
+    {
+        BracketSequenceDiv1 theObject;
+        eq<ll>(4, theObject.count("())[]][]([]()]]()]]]"),3854L);
+    }
     return 0;
 }
 // END CUT HERE
