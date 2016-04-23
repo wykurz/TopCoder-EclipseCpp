@@ -1,0 +1,25 @@
+<html><body bgcolor="#000000" text="#ffffff"><table><tr><td colspan="2"><h3>Problem Statement</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td>We have a garden that contains some flowers.
+The flowers are arranged into a rectangle with 2 rows and n columns.
+You are given a vector &lt;string&gt; <b>garden</b> that describes our garden.
+The vector &lt;string&gt; <b>garden</b> has two elements, each with n characters.
+Each character in <b>garden</b> represents one flower.
+Different characters in <b>garden</b> represent different colors.
+<br></br>
+<br></br>
+<br></br>
+Two flowers are considered adjacent if they are in the same column, or if they are next to each other in the same row.
+Your goal is to produce a garden in which no pair of adjacent flowers shares the same color.
+You may rearrange the flowers in your garden arbitrarily (without changing its shape).
+More precisely, you may swap any two flowers in your garden, and you may do so arbitrarily many times.
+<br></br>
+<br></br>
+<br></br>
+If the goal can be reached, return a vector &lt;string&gt; that will encode the resulting garden in the same format as was used for <b>garden</b>.
+If there are multiple solutions, you may return any of them.
+If there is no solution, return an empty vector &lt;string&gt;.
+</td></tr><tr><td colspan="2"><h3>Definition</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Class:</td><td>ColorfulGarden</td></tr><tr><td>Method:</td><td>rearrange</td></tr><tr><td>Parameters:</td><td>vector &lt;string&gt;</td></tr><tr><td>Returns:</td><td>vector &lt;string&gt;</td></tr><tr><td>Method signature:</td><td>vector &lt;string&gt; rearrange(vector &lt;string&gt; garden)</td></tr><tr><td colspan="2">(be sure your method is public)</td></tr></table></td></tr><tr><td colspan="2"><h3>Limits</h3></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td>Time limit (s):</td><td>2.000</td></tr><tr><td>Memory limit (MB):</td><td>256</td></tr><tr><td>Stack limit (MB):</td><td>256</td></tr></table></td></tr><tr><td colspan="2"><h3>Constraints</h3></td></tr><tr><td align="center" valign="top">-</td><td><b>garden</b> will contain exactly 2 elements, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element in <b>garden</b> will contain between 1 and 50 characters, inclusive.</td></tr><tr><td align="center" valign="top">-</td><td>Each element in <b>garden</b> will contain the same number of characters.</td></tr><tr><td align="center" valign="top">-</td><td>Each character in <b>garden</b> will be a lowercase letter ('a'-'z').</td></tr><tr><td colspan="2"><h3>Examples</h3></td></tr><tr><td align="center" nowrap="true">0)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;aa&quot;,
+ &quot;bb&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;ba&quot;, &quot;ab&quot; }</pre></td></tr><tr><td><table><tr><td colspan="2">Swapping <b>garden</b>[0][1] and <b>garden</b>[1][1] produces a valid garden.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">1)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;xxxx&quot;,
+ &quot;xxxx&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: { }</pre></td></tr><tr><td><table><tr><td colspan="2">No matter what we do, we will end up with the same result, and that is not a valid solution.</td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">2)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;abcd&quot;,
+ &quot;abcd&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;abcd&quot;, &quot;dcba&quot; }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">3)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;abcdefghijklm&quot;,
+ &quot;nopqrstuvwxyz&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: {&quot;abcdefghijklm&quot;, &quot;nopqrstuvwxyz&quot; }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr><tr><td align="center" nowrap="true">4)</td><td></td></tr><tr><td>&#160;&#160;&#160;&#160;</td><td><table><tr><td><table><tr><td><pre>{&quot;aaa&quot;,
+ &quot;aab&quot;}</pre></td></tr></table></td></tr><tr><td><pre>Returns: { }</pre></td></tr><tr><td><table><tr><td colspan="2"></td></tr></table></td></tr></table></td></tr></table><p>This problem statement is the exclusive and proprietary property of TopCoder, Inc.  Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited.  (c)2003, TopCoder, Inc.  All rights reserved.  </p></body></html>
